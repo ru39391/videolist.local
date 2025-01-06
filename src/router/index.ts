@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Blog from '../views/Blog.vue'
-import Post from '../views/Post.vue'
+//import Post from '../views/Post.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -8,12 +8,14 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Blog',
     component: Blog
   },
+  /*
   {
     path: '/post-:id',
     name: 'Post',
     component: Post,
     props: true
   }
+  */
 ];
 
 const router = createRouter({

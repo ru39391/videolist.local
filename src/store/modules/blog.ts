@@ -2,6 +2,8 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import {
   API_URL,
+  ITEMS_KEY,
+  TAGS_KEY,
   IS_LIKED_KEY,
   IS_DIS_LIKED_KEY,
   DATA_IS_LOADING_MESS,
@@ -21,7 +23,7 @@ import type {
 const useBlogStore = defineStore('blog', () => {
   const isLoading = ref<boolean>(true);
   const alertMessage = ref<string>(DATA_IS_LOADING_MESS);
-  const postList = ref<TPostData[]>([]);
+  const itemsList = ref<TPostData[]>([]);
   const currentPost = ref<TPostData | undefined>(undefined);
   const commentList = ref<TCommentData[]>([]);
   const likesList = ref<TLikedData[]>([]);
@@ -34,8 +36,8 @@ const useBlogStore = defineStore('blog', () => {
     alertMessage.value = value;
   };
 
-  const setPostList = (arr: TPostData[]) => {
-    postList.value = [...arr];
+  const setItemsList = (arr: TPostData[]) => {
+    itemsList.value = [...arr];
   };
 
   const setCurrentPost = (id: number) => {
@@ -44,7 +46,7 @@ const useBlogStore = defineStore('blog', () => {
       return;
     }
 
-    currentPost.value = postList.value.find(item => item.id === id);
+    currentPost.value = itemsList.value.find(item => item.id === id);
   };
 
   const setCommentList = (arr: TCommentData[]) => {
@@ -78,40 +80,18 @@ const useBlogStore = defineStore('blog', () => {
     setLikesList(arr);
   };
 
-  const fetchPosts = async () => {
+  const fetchData = async () => {
     setLoading(true);
 
     try {
-      const { data: { posts } }: { data: TPostRespData} = await axios.get(API_URL);
-
-      setPostList(posts.filter((_, index) => index < 5));
-      setLikesList(
-        posts
-          .map(item => ({ id: item.id, isLiked: false, isDisLiked: false }))
-          .filter((_, index) => index < 5)
-      );
+      const [{data: itemsData}, {data: tagsData}] = await Promise.all([ITEMS_KEY, TAGS_KEY].map((key) => axios.get(`${API_URL}/${key}`)));
+      const isSucceed = [itemsData, tagsData].reduce((acc, { success }) => acc && success, true);
+      console.log([itemsData, tagsData]);
+      if(isSucceed) {
+        setItemsList(itemsData.data);
+      }
     } catch (error) {
       setAlertMessage(POSTS_ERROR_MESS);
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchComments = async (arr : TPostData[]) => {
-    if(arr.length === 0) {
-      setCommentList([]);
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await Promise.all(arr.map(({ id }) => axios.get(`${API_URL}/${id.toString()}/comments`)));
-
-      setCommentList(response.reduce((acc: TCommentData[], { data }: { data: TCommentRespData }) => [...acc, ...data.comments], []));
-    } catch (error) {
-      setAlertMessage(COMMENTS_ERROR_MESS);
       console.error(error);
     } finally {
       setLoading(false);
@@ -121,15 +101,14 @@ const useBlogStore = defineStore('blog', () => {
   return {
     isLoading,
     alertMessage,
-    postList,
+    itemsList,
     currentPost,
     commentList,
     likesList,
     setLoading,
-    fetchPosts,
+    fetchData,
     setCurrentPost,
     ratePost,
-    fetchComments,
     removeComment,
   };
 });

@@ -25,17 +25,17 @@ export default defineComponent({
     const alertMessage = computed(() => blogStore.alertMessage);
 
     onBeforeMount(() => {
-      blogStore.fetchPosts();
+      blogStore.fetchData();
     });
 
     onMounted(() => {
-      document.title = 'sasflix';
+      document.title = 'Управление закладками';
     });
 
     watch(
-      () => blogStore.postList,
+      () => blogStore.itemsList,
       (arr) => {
-        blogStore.fetchComments(arr);
+        console.log(arr[0]);
       },
       { deep: false }
     );

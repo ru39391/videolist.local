@@ -1,16 +1,16 @@
 <template>
-  <PostList />
+  <CardList />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import PostList from '../components/PostList.vue';
+import CardList from '../components/CardList.vue';
 
 export default defineComponent({
   name: 'Blog',
 
   components: {
-    PostList
+    CardList
   },
 });
 </script>
