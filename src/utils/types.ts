@@ -20,6 +20,8 @@ export type TItemData = {
   category?: string;
 }
 
+export type TItemDataKeys = keyof TItemData;
+
 export type TTagData = {
   id: number;
   name: string;
@@ -27,3 +29,5 @@ export type TTagData = {
   updatedon: string | null;
   counter?: number;
 }
+
+export type TTagDataKeys = keyof TTagData;

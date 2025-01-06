@@ -1,4 +1,10 @@
-import type { TCustomData, TItemData, TTagData } from './types';
+import type {
+  TCustomData,
+  TItemData,
+  TTagData,
+  TItemDataKeys,
+  TTagDataKeys
+} from './types';
 
 const fetchArray = (arr: TCustomData<string | number>[], param: string): TCustomData<string | number>[] => {
   return arr.reduce((acc: TCustomData<string | number>[], item: TCustomData<string | number>) => {
@@ -21,13 +27,19 @@ const sortArrValues = (arr: TItemData[] | TTagData[], key: string, dir: string =
 
   const handleNumValue = (value: number): number => value !== null && value !== undefined ? Number(value) : 0;
 
-  const handleValue = (value: string | number): string | number => typeof value === 'string'
+  const handleValue = (value: string | number | null | undefined): string | number => typeof value === 'string'
     ? handleStrValue(value as string)
     : handleNumValue(value as number);
 
-  const array = arr.sort((a, b) => {
-    const valueA = handleValue(a[key]);
-    const valueB = handleValue(b[key]);
+  const isItemData = (item: TItemData | TTagData): item is TItemData => typeof key in item;
+
+  const array = arr.sort((a: TItemData | TTagData, b: TItemData | TTagData) => {
+    const valueA = handleValue(
+      isItemData(a) ? ({...a} as TItemData)[key as TItemDataKeys] : ({...a} as TTagData)[key as TTagDataKeys]
+    );
+    const valueB = handleValue(
+      isItemData(b) ? ({...b} as TItemData)[key as TItemDataKeys] : ({...b} as TTagData)[key as TTagDataKeys]
+    );
 
     if(valueA < valueB) {
       return -1;

@@ -56,7 +56,7 @@ export default defineComponent({
     const taggedItemsSumm = computed(() => blogStore.tagsList.reduce((acc, item) => acc + Number(item[COUNTER_KEY]), 0));
     const siteName = computed(() => SITE_NAME);
 
-    const selectTag = (value: number) => {
+    const selectTag = (value: number | null = null) => {
       blogStore.setCurrentItems(value);
     };
 

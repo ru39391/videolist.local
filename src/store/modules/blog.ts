@@ -59,6 +59,7 @@ const useBlogStore = defineStore('blog', () => {
   };
 
   const setCurrentItems = (value: number | null = null) => {
+    console.log({data: [...itemsList.value]});
     currentItems.value = value === null ? [...itemsList.value] : [...itemsList.value].filter(item => item[TAG_KEY] === value);
   };
 
@@ -66,8 +67,11 @@ const useBlogStore = defineStore('blog', () => {
     setLoading(true);
 
     try {
-      const [{data: itemsData}, {data: tagsData}] = await Promise.all([ITEMS_KEY, TAGS_KEY].map((key) => axios.get(`${API_URL}/${key}`)));
-      const isSucceed = [itemsData, tagsData].reduce((acc, { success }) => acc && success, true);
+      const [
+        {data: itemsData},
+        {data: tagsData}
+      ] = await Promise.all([ITEMS_KEY, TAGS_KEY].map((key) => axios.get(`${API_URL}${key}`)));
+      const isSucceed: boolean = [itemsData, tagsData].reduce((acc: boolean, { success }: { success: boolean; }) => acc && success, true);
 
       if(isSucceed) {
         setItemsList(itemsData.data, tagsData.data);
