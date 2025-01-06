@@ -14,36 +14,23 @@
             </a>
         </div>
         <div class="col-md-8">
-          <div class="card-body">
-            <p class="card-text">
-              <small class="text-body-secondary">{{ savedon }}</small><br />
-              {{ name }}
-            </p>
-            <h6 class="card-subtitle">[[+item_id]]</h6>
-            <p class="card-text"><small class="text-body-secondary">{{ alias }}</small></p>
-          </div>
+          <CardContent :name="name" :savedon="savedon" :tag="tag" :url="url" />
         </div>
       </div>
-      <div class="card-body" v-else>
-        <p class="card-text">
-          <small class="text-body-secondary">{{ savedon }}</small><br />
-          {{ name }}
-        </p>
-        <p class="card-text"><small class="text-body-secondary">{{ alias }}</small></p>
-        <p class="card-text"><a :href="url" target="_blank">{{ url }}</a></p>
-      </div>
+      <CardContent :name="name" :savedon="savedon" :tag="tag" :url="url" v-else />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useBlogStore } from '../store/modules/blog';
+import CardContent from './CardContent.vue';
 
 export default defineComponent({
   name: 'Card',
 
   components: {
+    CardContent
   },
 
   props: {
@@ -54,10 +41,6 @@ export default defineComponent({
     name: {
       type: String,
       required: true,
-    },
-    alias: {
-      type: String,
-      required: false,
     },
     url: {
       type: String,
@@ -71,14 +54,6 @@ export default defineComponent({
       type: String,
       required: false,
     },
-  },
-
-  setup() {
-    const blogStore = useBlogStore();
-
-    return {
-      ratePost: blogStore.ratePost
-    };
   },
 });
 </script>

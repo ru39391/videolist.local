@@ -1,47 +1,29 @@
-export type TCustomData<T> = {
-  [x: string]: T;
-}
+export type TCustomData<T> = Record<string, T>
 
-export type TLikedData = {
+export type TItemData = {
   id: number;
-  isLiked: boolean;
-  isDisLiked: boolean;
+  name: string;
+  alias: string;
+  item_id: string;
+  url: string;
+  duration: string;
+  createdon: string;
+  updatedon: string | null;
+  publishedon: string | null;
+  savedon: string;
+  author: number;
+  channel: number;
+  tag: number;
+  isDownloaded: number;
+  isViewed: number;
+  date?: number;
+  category?: string;
 }
 
-export type TPostData = {
+export type TTagData = {
   id: number;
-  title: string;
-  body: string;
-  tags: string[];
-  reactions: TCustomData<number>;
-  views: number;
-  userId: number;
-}
-
-export type TPostRespData = {
-  limit: number;
-  posts: TPostData[];
-  skip: number;
-  total: number;
-}
-
-export type TUserData = {
-  id: number;
-  username: string;
-  fullName: string;
-}
-
-export type TCommentData = {
-  id: number;
-  body: string;
-  likes: number;
-  postId: number;
-  user: TUserData;
-}
-
-export type TCommentRespData = {
-  limit: number;
-  comments: TCommentData[];
-  skip: number;
-  total: number;
+  name: string;
+  createdon: string;
+  updatedon: string | null;
+  counter?: number;
 }

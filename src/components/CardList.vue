@@ -7,10 +7,9 @@
       v-for="item in itemsList"
       :key="item.id"
       :id="item.item_id"
-      :alias="item.alias"
       :name="item.name"
       :url="item.url"
-      :tag="item.tag"
+      :tag="item.category"
       :savedon="item.savedon"
     />
   </div>

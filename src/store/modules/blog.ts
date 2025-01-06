@@ -4,29 +4,31 @@ import {
   API_URL,
   ITEMS_KEY,
   TAGS_KEY,
-  IS_LIKED_KEY,
-  IS_DIS_LIKED_KEY,
+  ID_KEY,
+  NAME_KEY,
+  TAG_KEY,
+  DATE_KEY,
+  SAVEDON_KEY,
+  COUNTER_KEY,
+  CATEGORY_KEY,
   DATA_IS_LOADING_MESS,
-  POSTS_ERROR_MESS,
-  COMMENTS_ERROR_MESS
+  POSTS_ERROR_MESS
 } from '../../utils/constants';
 import axios from 'axios';
 
 import type {
-  TPostData,
-  TPostRespData,
-  TCommentData,
-  TCommentRespData,
-  TLikedData
+  TItemData,
+  TTagData
 } from '../../utils/types';
+
+import { handleDate, sortArrValues } from '../../utils';
 
 const useBlogStore = defineStore('blog', () => {
   const isLoading = ref<boolean>(true);
   const alertMessage = ref<string>(DATA_IS_LOADING_MESS);
-  const itemsList = ref<TPostData[]>([]);
-  const currentPost = ref<TPostData | undefined>(undefined);
-  const commentList = ref<TCommentData[]>([]);
-  const likesList = ref<TLikedData[]>([]);
+  const itemsList = ref<TItemData[]>([]);
+  const tagsList = ref<TTagData[]>([]);
+  const currentItems = ref<TItemData[]>([]);
 
   const setLoading = (value: boolean) => {
     isLoading.value = value;
@@ -36,48 +38,24 @@ const useBlogStore = defineStore('blog', () => {
     alertMessage.value = value;
   };
 
-  const setItemsList = (arr: TPostData[]) => {
-    itemsList.value = [...arr];
-  };
+  const setItemsList = (itemsArr: TItemData[], tagsArr: TTagData[]) => {
+    const array = [...itemsArr].map(
+      (item) => {
+        const tagData = [...tagsArr].find(data => data[ID_KEY] === item[TAG_KEY]);
 
-  const setCurrentPost = (id: number) => {
-    if(id !== 0 && !id) {
-      currentPost.value = undefined;
-      return;
-    }
-
-    currentPost.value = itemsList.value.find(item => item.id === id);
-  };
-
-  const setCommentList = (arr: TCommentData[]) => {
-    commentList.value = [...arr];
-  };
-
-  const removeComment = (id: string) => {
-    const arr = commentList.value.filter(item => item.id !== Number(id));
-
-    setCommentList(arr);
-  };
-
-  const setLikesList = (arr: TLikedData[]) => {
-    likesList.value = [...arr];
-  };
-
-  const ratePost = ({ id, key }: { id: string; key: 'isLiked' | 'isDisLiked' }) => {
-    const arr = likesList.value.map(
-      item => ({
-        ...item,
-        ...(
-          item.id === Number(id) && {
-            [key]: !item[key] as boolean,
-            ...( key === IS_LIKED_KEY && { [IS_DIS_LIKED_KEY]: false } ),
-            ...( key === IS_DIS_LIKED_KEY && { [IS_LIKED_KEY]: false } )
-          }
-        )
-      })
+        return ({ ...item, [DATE_KEY]: handleDate(item[SAVEDON_KEY]), [CATEGORY_KEY]: tagData ? tagData[NAME_KEY] : '' });
+      }
     );
 
-    setLikesList(arr);
+    itemsList.value = sortArrValues(array, DATE_KEY, 'DESC') as TItemData[];
+  };
+
+  const setTagsList = (tagsArr: TTagData[], itemsArr: TItemData[]) => {
+    const array = [...tagsArr].map(
+      (item) => ({ ...item, [COUNTER_KEY]: itemsArr.filter(data => item[ID_KEY] === data[TAG_KEY]).length })
+    );
+
+    tagsList.value = sortArrValues(array.filter(item => item[COUNTER_KEY] > 0), COUNTER_KEY, 'DESC') as TTagData[];
   };
 
   const fetchData = async () => {
@@ -86,9 +64,10 @@ const useBlogStore = defineStore('blog', () => {
     try {
       const [{data: itemsData}, {data: tagsData}] = await Promise.all([ITEMS_KEY, TAGS_KEY].map((key) => axios.get(`${API_URL}/${key}`)));
       const isSucceed = [itemsData, tagsData].reduce((acc, { success }) => acc && success, true);
-      console.log([itemsData, tagsData]);
+
       if(isSucceed) {
-        setItemsList(itemsData.data);
+        setItemsList(itemsData.data, tagsData.data);
+        setTagsList(tagsData.data, itemsData.data);
       }
     } catch (error) {
       setAlertMessage(POSTS_ERROR_MESS);
@@ -102,14 +81,10 @@ const useBlogStore = defineStore('blog', () => {
     isLoading,
     alertMessage,
     itemsList,
-    currentPost,
-    commentList,
-    likesList,
+    tagsList,
+    currentItems,
     setLoading,
     fetchData,
-    setCurrentPost,
-    ratePost,
-    removeComment,
   };
 });
 

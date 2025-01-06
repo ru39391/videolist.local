@@ -35,7 +35,7 @@ export default defineComponent({
     watch(
       () => blogStore.itemsList,
       (arr) => {
-        console.log(arr[0]);
+        console.log({ length: arr.length });
       },
       { deep: false }
     );
