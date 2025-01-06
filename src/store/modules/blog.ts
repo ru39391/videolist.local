@@ -59,7 +59,6 @@ const useBlogStore = defineStore('blog', () => {
   };
 
   const setCurrentItems = (value: number | null = null) => {
-    console.log({data: [...itemsList.value]});
     currentItems.value = value === null ? [...itemsList.value] : [...itemsList.value].filter(item => item[TAG_KEY] === value);
   };
 
