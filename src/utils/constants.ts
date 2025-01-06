@@ -12,12 +12,12 @@ const TAGS_KEY = 'tags';
 const DATA_IS_LOADING_MESS = 'Данные загружаются';
 const POSTS_ERROR_MESS = 'При загрузке списка статей произошла ошибка, повторите попытку позже';
 
-const ROOT_PATH = import.meta.env.VITE_ROOT_PATH;
-const SITE_URL = import.meta.env.VITE_SITE_URL;
+const SITE_NAME = import.meta.env.VITE_SITE_NAME;
 const API_URL = import.meta.env.VITE_API_URL;
 
 export {
   API_URL,
+  SITE_NAME,
   ITEMS_KEY,
   TAGS_KEY,
   ID_KEY,

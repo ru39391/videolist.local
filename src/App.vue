@@ -35,6 +35,7 @@ export default defineComponent({
     watch(
       () => blogStore.itemsList,
       (arr) => {
+        blogStore.setCurrentItems();
         console.log({ length: arr.length });
       },
       { deep: false }

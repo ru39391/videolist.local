@@ -14,10 +14,10 @@
             </a>
         </div>
         <div class="col-md-8">
-          <CardContent :name="name" :savedon="savedon" :tag="tag" :url="url" />
+          <CardContent :alias="alias" :name="name" :savedon="savedon" :tag="tag" :url="url" />
         </div>
       </div>
-      <CardContent :name="name" :savedon="savedon" :tag="tag" :url="url" v-else />
+      <CardContent :alias="alias" :name="name" :savedon="savedon" :tag="tag" :url="url" v-else />
     </div>
   </div>
 </template>
@@ -41,6 +41,10 @@ export default defineComponent({
     name: {
       type: String,
       required: true,
+    },
+    alias: {
+      type: String,
+      required: false,
     },
     url: {
       type: String,

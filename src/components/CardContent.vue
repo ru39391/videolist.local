@@ -2,7 +2,7 @@
   <div class="card-body">
     <p class="card-text">
       <small class="text-body-secondary">{{ tag }}</small><br />
-      {{ name }}
+      {{ name || alias }}
     </p>
     <p class="card-text"><small class="text-body-secondary">{{ savedon }}</small></p>
     <p class="card-text"><a :href="url" target="_blank">{{ url }}</a></p>
@@ -19,6 +19,10 @@ export default defineComponent({
     name: {
       type: String,
       required: true,
+    },
+    alias: {
+      type: String,
+      required: false,
     },
     url: {
       type: String,

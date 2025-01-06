@@ -1,13 +1,14 @@
 <template>
   <div
-    v-if="itemsList.length > 0"
+    v-if="currentItems.length > 0"
     class="row"
   >
     <Card
-      v-for="item in itemsList"
+      v-for="item in currentItems"
       :key="item.id"
       :id="item.item_id"
       :name="item.name"
+      :alias="item.alias"
       :url="item.url"
       :tag="item.category"
       :savedon="item.savedon"
@@ -29,10 +30,10 @@ export default defineComponent({
 
   setup() {
     const blogStore = useBlogStore();
-    const itemsList = computed(() => blogStore.itemsList);
+    const currentItems = computed(() => blogStore.currentItems);
 
     return {
-      itemsList
+      currentItems
     };
   }
 });
