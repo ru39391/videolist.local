@@ -47,7 +47,7 @@ const useBlogStore = defineStore('blog', () => {
       }
     );
 
-    itemsList.value = sortArrValues(array, DATE_KEY, 'DESC') as TItemData[];
+    itemsList.value = sortArrValues(array, NAME_KEY) as TItemData[];
   };
 
   const setTagsList = (tagsArr: TTagData[], itemsArr: TItemData[]) => {
