@@ -1,3 +1,5 @@
+import Twig, { Template } from 'twig';
+
 import type {
   TCustomData,
   TItemData,
@@ -53,8 +55,34 @@ const sortArrValues = (arr: TItemData[] | TTagData[], key: string, dir: string =
   return dir === 'ASC' ? array : array.reverse();
 }
 
+const handleLinkList = (arr: HTMLElement[]) => {
+  console.log(arr.map((item) => ({
+    name: item.textContent,
+    href: item.getAttribute('href'),
+    savedon: item.getAttribute('add_date'),
+    tag: item.getAttribute('tags') || '',
+  })));
+}
+
+const fetchSourceData = async(): Promise<Template | undefined> => {
+  const parser = new DOMParser();
+
+  try {
+    const res = await fetch('src/assets/source/src.twig');
+    const data = await res.text();
+    const tpl = await Twig.twig({ data });
+
+    const { body } = parser.parseFromString(tpl.render(), 'text/html');
+
+    handleLinkList(Array.from(body.querySelectorAll('a')));
+  } catch(err) {
+    console.error(err);
+  }
+}
+
 export {
   fetchArray,
   handleDate,
-  sortArrValues
+  sortArrValues,
+  fetchSourceData
 }

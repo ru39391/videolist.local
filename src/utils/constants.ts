@@ -8,6 +8,7 @@ const CATEGORY_KEY = 'category';
 
 const ITEMS_KEY = 'items';
 const TAGS_KEY = 'tags';
+const BOOKMARKS_KEY = 'bookmarks';
 
 const DATA_IS_LOADING_MESS = 'Данные загружаются';
 const POSTS_ERROR_MESS = 'При загрузке списка статей произошла ошибка, повторите попытку позже';
@@ -20,6 +21,7 @@ export {
   SITE_NAME,
   ITEMS_KEY,
   TAGS_KEY,
+  BOOKMARKS_KEY,
   ID_KEY,
   NAME_KEY,
   TAG_KEY,
