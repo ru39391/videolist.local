@@ -11,7 +11,7 @@ import type {
   TTagData
 } from '../../utils/types';
 
-import { handleDate, sortArrValues } from '../../utils';
+import { fetchSourceData } from '../../utils';
 
 const useBookmarksStore = defineStore('bookmarks', () => {
   const isLoading = ref<boolean>(true);
@@ -26,9 +26,9 @@ const useBookmarksStore = defineStore('bookmarks', () => {
     setLoading(true);
 
     try {
-      const { data: { success, data } } = await axios.get(`${API_URL}${BOOKMARKS_KEY}`)
+      const { isSucceed, data } = await fetchSourceData();
 
-      if(success) {
+      if(isSucceed) {
         console.log(data);
       }
     } catch (error) {

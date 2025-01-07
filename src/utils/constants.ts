@@ -14,9 +14,11 @@ const DATA_IS_LOADING_MESS = 'Данные загружаются';
 const POSTS_ERROR_MESS = 'При загрузке списка статей произошла ошибка, повторите попытку позже';
 
 const SITE_NAME = import.meta.env.VITE_SITE_NAME;
+const SITE_URL = import.meta.env.VITE_SITE_URL;
 const API_URL = import.meta.env.VITE_API_URL;
 
 export {
+  SITE_URL,
   API_URL,
   SITE_NAME,
   ITEMS_KEY,

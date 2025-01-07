@@ -31,3 +31,19 @@ export type TTagData = {
 }
 
 export type TTagDataKeys = keyof TTagData;
+
+export type TLinkData = {
+  caption: string;
+  href: string;
+  savedon: string;
+  tag: string;
+}
+
+export type THandledLinkData = {
+  name: string;
+  alias: string;
+  item_id: string;
+  url: string;
+  savedon: string;
+  tag: string;
+}
