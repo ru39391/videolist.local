@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, onMounted, watch } from 'vue';
+import { computed, defineComponent, onBeforeMount, watch } from 'vue';
 import { useBlogStore } from './store/modules/blog';
 import Layout from './components/Layout.vue';
 
@@ -26,10 +26,6 @@ export default defineComponent({
 
     onBeforeMount(() => {
       blogStore.fetchData();
-    });
-
-    onMounted(() => {
-      document.title = 'Управление закладками';
     });
 
     watch(
