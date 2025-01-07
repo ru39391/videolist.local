@@ -6,7 +6,10 @@
       class="nav-item d-flex flex-column"
     >
       <button
-        class="nav-link d-flex align-items-center justify-content-between text-white"
+        :class="[
+          'nav-link d-flex align-items-center justify-content-between text-white',
+          { 'active': currentTag === tag.name }
+        ]"
         @click="selectTag(tag)"
       >
         {{ tag.name }}
@@ -46,6 +49,10 @@ export default defineComponent({
       type: Function,
       required: true,
     },
+    currentTag: {
+      type: String,
+      required: true,
+    }
   },
 
   setup() {

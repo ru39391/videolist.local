@@ -87,16 +87,18 @@ const formatName = (str: string): { name: string; alias: string; } => {
   const caption = value && str.includes(' • • ') ? value.split(' Подтверждено')[0] : str;
 
   return {
-    name: caption.trim().slice(0,255),
+    name: caption.split(' - YouTube')[0].trim().slice(0,255),
     alias: translit(caption)
   };
 }
 
 const formatUrl = (str: string): { url: string; item_id: string; } => {
-  const value = str.split('v%3D')[1];
-  const url = value && str.includes('google') && str.includes('youtube.com')
-    ? `https://www.youtube.com/watch?v=${value.split('&usg=')[0]}`
-    : str;
+  const startValue = str.trim().split('&pp=')[0];
+  const endValue = startValue.split('v%3D')[1];
+  const value = endValue && startValue.includes('google') && startValue.includes('youtube.com')
+    ? `https://www.youtube.com/watch?v=${endValue.split('&usg=')[0]}`
+    : startValue;
+  const url = value.split('&psig=')[0];
   const [_, id] = url.includes('v=') ? url.split('v=') : ['', url];
   const item_id = id.length === 11 ? id : id.split('&')[0];
 
@@ -107,7 +109,7 @@ const formatUrl = (str: string): { url: string; item_id: string; } => {
 }
 
 const formatDate = (value: string): string => {
-  const date = new Date(Number(value) * 1000);
+  const date = new Date(Number(value.trim()) * 1000);
 
   const year = date.getFullYear();
   const [
@@ -141,17 +143,17 @@ const handleLinkList = (arr: HTMLElement[]): Record<string, THandledLinkData[]> 
 
   const bookmarks = array.map(({ caption, href, savedon, tag }) => {
     const { name, alias } = formatName(caption.trim());
-    const { url, item_id } = formatUrl(href.trim());
+    const { url, item_id } = formatUrl(href);
 
     return {
       name,
       alias,
       item_id,
       url,
-      savedon: formatDate(savedon.trim()),
+      savedon: formatDate(savedon),
       tag: tag.trim() || '-',
     }
-  });
+  }).filter(({ url }) => !url.includes('skrinshoter'));
 
   return bookmarks.reduce(
     (acc, item) => acc[item.tag] ? {...acc, [item.tag]: [...acc[item.tag], item]} : {...acc, [item.tag]: [item]}, {} as Record<string, THandledLinkData[]>
