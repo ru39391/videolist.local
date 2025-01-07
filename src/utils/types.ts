@@ -23,10 +23,10 @@ export type TItemData = {
 export type TItemDataKeys = keyof TItemData;
 
 export type TTagData = {
-  id: number;
+  id: number | null;
   name: string;
-  createdon: string;
-  updatedon: string | null;
+  createdon?: string | null;
+  updatedon?: string | null;
   counter?: number;
 }
 
@@ -46,4 +46,10 @@ export type THandledLinkData = {
   url: string;
   savedon: string;
   tag: string;
+}
+
+export type TBookmarkTagData = {
+  id: number | null;
+  name: string;
+  counter: number;
 }
