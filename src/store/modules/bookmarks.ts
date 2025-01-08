@@ -25,10 +25,11 @@ setActivePinia(piniaStore);
 const blogStore = useBlogStore();
 
 const useBookmarksStore = defineStore('bookmarks', () => {
-  const isLoading = ref<boolean>(true);
+  const isLoading = ref<boolean>(false);
   const currentBookmarks = ref<TItemData[]>([]);
   const bookmarksList = ref<TItemData[]>([]);
   const bookmarkTagsList = ref<TTagData[]>([]);
+  const bookmarksData = ref<Record<string, TItemData[]>>({ videoList: [], itemsList: [] });
 
   const setLoading = (value: boolean) => {
     isLoading.value = value;
@@ -36,7 +37,7 @@ const useBookmarksStore = defineStore('bookmarks', () => {
 
   const setCurrentItems = ({ id, name }: TTagData) => {
     const array = [...bookmarksList.value].filter((item) => item[CATEGORY_KEY] === name);
-    const ids = [...blogStore.tagsList].map(item => item[ID_KEY] as number);
+    //const ids = [...blogStore.tagsList].map(item => item[ID_KEY] as number);
 
     currentBookmarks.value = sortArrValues(
       array.map((item) =>  ({
@@ -47,10 +48,22 @@ const useBookmarksStore = defineStore('bookmarks', () => {
     ) as TItemData[];
   };
 
+  const setBookmarksData = (arr: TItemData[]) => {
+    const {
+      videoList,
+      itemsList
+    } = arr.reduce(
+      (acc, item) => item[URL_KEY].includes('youtube.com') ? {...acc, videoList: [...acc.videoList, item]} : {...acc, itemsList: [...acc.itemsList, item]},
+      { videoList: [], itemsList: [] } as Record<string, TItemData[]>
+    );
+
+    bookmarksData.value = { videoList, itemsList };
+  };
+
   const setBookmarksList = (arr: THandledLinkData[][]) => {
     const array = [...arr].flat();
 
-    bookmarksList.value = sortArrValues(
+    const bookmarks = sortArrValues(
       array.map((item, index) => ({
         ...item,
         id: index,
@@ -67,7 +80,11 @@ const useBookmarksStore = defineStore('bookmarks', () => {
       })),
       NAME_KEY
     ) as TItemData[];
-  }
+
+    setBookmarksData(bookmarks);
+
+    bookmarksList.value = bookmarks;
+  };
 
   const handleBookmarksData = (data: Record<string, THandledLinkData[]>) => {
     const arr = Object.entries(data).reduce(
@@ -87,7 +104,7 @@ const useBookmarksStore = defineStore('bookmarks', () => {
       }),
       NAME_KEY
     ) as TTagData[];
-  }
+  };
 
   const fetchBookmarks = async () => {
     setLoading(true);
@@ -107,10 +124,12 @@ const useBookmarksStore = defineStore('bookmarks', () => {
 
   return {
     isLoading,
+    bookmarksData,
     bookmarkTagsList,
     currentBookmarks,
     fetchBookmarks,
     setCurrentItems,
+    setBookmarksData
   };
 });
 
