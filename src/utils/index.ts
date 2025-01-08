@@ -1,24 +1,21 @@
 import Twig, { Template } from 'twig';
-import { SITE_URL } from './constants';
+import { SITE_URL, ITEM_ID_KEY } from './constants';
 import type {
-  TCustomData,
-  TItemData,
-  TTagData,
-  TItemDataKeys,
-  TTagDataKeys,
+  TBaseData,
+  TBaseArr,
   TLinkData,
   THandledLinkData
 } from './types';
 
-const fetchArray = (arr: TCustomData<string | number>[], param: string): TCustomData<string | number>[] => {
-  return arr.reduce((acc: TCustomData<string | number>[], item: TCustomData<string | number>) => {
+const fetchArray = (arr: TBaseArr, param: string): TBaseArr => arr.reduce(
+  (acc: TBaseArr, item: TBaseData) => {
     if(acc.find(data => data[param] === item[param])) {
       return acc;
     } else {
       return [...acc, item];
     }
-  }, []);
-};
+  }, []
+);
 
 const handleDate = (value: string): number => {
   const date = new Date(value.replace(' ', 'T'));
@@ -26,24 +23,18 @@ const handleDate = (value: string): number => {
   return Math.floor(date.getTime() / 1000);
 }
 
-const sortArrValues = (arr: TItemData[] | TTagData[], key: string, dir: string = 'ASC'): TItemData[] | TTagData[] => {
+const sortArrValues = (arr: TBaseArr, key: string, dir: string = 'ASC'): TBaseArr => {
   const handleStrValue = (value: string): string => value !== null && value !== undefined ? value.toString().toLowerCase() : '';
 
   const handleNumValue = (value: number): number => value !== null && value !== undefined ? Number(value) : 0;
 
-  const handleValue = (value: string | number | null | undefined): string | number => typeof value === 'string'
+  const handleValue = (value: string | number | null): string | number => typeof value === 'string'
     ? handleStrValue(value as string)
-    : handleNumValue(value as number);
+    : handleNumValue(value !== null ? value as number : 0);
 
-  const isItemData = (item: TItemData | TTagData): item is TItemData => typeof key in item;
-
-  const array = arr.sort((a: TItemData | TTagData, b: TItemData | TTagData) => {
-    const valueA = handleValue(
-      isItemData(a) ? ({...a} as TItemData)[key as TItemDataKeys] : ({...a} as TTagData)[key as TTagDataKeys]
-    );
-    const valueB = handleValue(
-      isItemData(b) ? ({...b} as TItemData)[key as TItemDataKeys] : ({...b} as TTagData)[key as TTagDataKeys]
-    );
+  const array = arr.sort((a, b) => {
+    const valueA = handleValue(a[key]);
+    const valueB = handleValue(b[key]);
 
     if(valueA < valueB) {
       return -1;
@@ -57,8 +48,7 @@ const sortArrValues = (arr: TItemData[] | TTagData[], key: string, dir: string =
   return dir === 'ASC' ? array : array.reverse();
 }
 
-const translit = (str: string): string => {
-  const pattern = /[^a-zа-я0-9\s]/g;
+const translit = (str: string, pattern: RegExp): string => {
   const letters = {
       'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh', 'з': 'z',
       'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r',
@@ -79,20 +69,47 @@ const translit = (str: string): string => {
     .reduce(
       (acc, item) => item === 'ъ' || item === 'ь' ? acc : `${acc}${letters[item] || item}`, ''
     )
-    .slice(0,255);
+    .slice(0,200);
 }
 
 const formatName = (str: string): { name: string; alias: string; } => {
-  const value = str.split(' • • ')[0];
+  const pattern = /[^aA-zZаА-яЯё0-9\s]/g;
+  const value = str.split(' • • ')[0].replace(pattern, ' ');
   const caption = value && str.includes(' • • ') ? value.split(' Подтверждено')[0] : str;
 
   return {
-    name: caption.split(' - YouTube')[0].trim().slice(0,255),
-    alias: translit(caption)
+    name: caption
+      .split(' - YouTube')[0]
+      .trim()
+      .slice(0,200),
+    alias: translit(caption, pattern)
   };
 }
 
-const formatUrl = (str: string): { url: string; item_id: string; } => {
+const formatVideoUrl = (str: string): string => {
+  let value = str;
+
+  if(value.includes('/shorts/')) {
+    value = value.split('/shorts/')[1];
+  }
+
+  if(value.includes('/channel/')) {
+    value = value.split('/channel/')[1];
+  }
+
+  if(value.includes('/@')) {
+    value = value.split('/@')[1];
+    value = value.split('/videos')[0];
+  }
+
+  if(value.includes('/hashtag/')) {
+    value = '';
+  }
+
+  return value;
+}
+
+const formatUrl = (str: string, alias: string): { url: string; item_id: string; } => {
   const startValue = str.trim().split('&pp=')[0];
   const endValue = startValue.split('v%3D')[1];
   const value = endValue && startValue.includes('google') && startValue.includes('youtube.com')
@@ -104,7 +121,7 @@ const formatUrl = (str: string): { url: string; item_id: string; } => {
 
   return {
     url,
-    item_id: url.includes('youtube.com') ? item_id : ''
+    item_id: url.includes('youtube.com') ? formatVideoUrl(item_id) : alias
   };
 }
 
@@ -141,9 +158,9 @@ const handleLinkList = (arr: HTMLElement[]): Record<string, THandledLinkData[]> 
     return Object.entries(data).reduce((acc, item) => ({ ...acc, [item[0]]: item[1] || ''}), {} as TLinkData);
   });
 
-  const bookmarks = array.map(({ caption, href, savedon, tag }) => {
+  const bookmarks = array.map(({ caption, href, savedon, tag }, index) => {
     const { name, alias } = formatName(caption.trim());
-    const { url, item_id } = formatUrl(href);
+    const { url, item_id } = formatUrl(href, `${alias}-${index}`);
 
     return {
       name,
@@ -155,7 +172,7 @@ const handleLinkList = (arr: HTMLElement[]): Record<string, THandledLinkData[]> 
     }
   }).filter(({ url }) => !url.includes('skrinshoter'));
 
-  return bookmarks.reduce(
+  return [...fetchArray(bookmarks, ITEM_ID_KEY) as THandledLinkData[]].reduce(
     (acc, item) => acc[item.tag] ? {...acc, [item.tag]: [...acc[item.tag], item]} : {...acc, [item.tag]: [item]}, {} as Record<string, THandledLinkData[]>
   );
 }

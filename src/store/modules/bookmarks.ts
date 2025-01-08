@@ -5,6 +5,8 @@ import piniaStore from '../index';
 import {
   ID_KEY,
   NAME_KEY,
+  ITEM_ID_KEY,
+  URL_KEY,
   COUNTER_KEY,
   TAG_KEY,
   CATEGORY_KEY
@@ -39,7 +41,7 @@ const useBookmarksStore = defineStore('bookmarks', () => {
     currentBookmarks.value = sortArrValues(
       array.map((item) =>  ({
         ...item,
-        [TAG_KEY]: id || Math.max(...ids) + 1
+        [TAG_KEY]: id
       })),
       NAME_KEY
     ) as TItemData[];
@@ -60,7 +62,7 @@ const useBookmarksStore = defineStore('bookmarks', () => {
         channel: 0,
         isDownloaded: 0,
         isViewed: 0,
-        [TAG_KEY]: 0,
+        [ITEM_ID_KEY]: item[URL_KEY].includes('youtube.com') ? item[ITEM_ID_KEY] : '',
         [CATEGORY_KEY]: item[TAG_KEY]
       })),
       NAME_KEY
@@ -84,7 +86,7 @@ const useBookmarksStore = defineStore('bookmarks', () => {
         }
       }),
       NAME_KEY
-    );
+    ) as TTagData[];
   }
 
   const fetchBookmarks = async () => {

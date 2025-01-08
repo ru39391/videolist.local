@@ -1,5 +1,9 @@
 export type TCustomData<T> = Record<string, T>
 
+export type TBaseData = TCustomData<string | number | null>;
+
+export type TBaseArr = TBaseData[];
+
 export type TItemData = {
   id: number;
   name: string;

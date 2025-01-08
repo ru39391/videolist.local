@@ -1,6 +1,8 @@
 const ID_KEY = 'id';
+const ITEM_ID_KEY = 'item_id';
 const NAME_KEY = 'name';
 const TAG_KEY = 'tag';
+const URL_KEY = 'url';
 const DATE_KEY = 'date';
 const SAVEDON_KEY = 'savedon';
 const COUNTER_KEY = 'counter';
@@ -25,7 +27,9 @@ export {
   TAGS_KEY,
   BOOKMARKS_KEY,
   ID_KEY,
+  ITEM_ID_KEY,
   NAME_KEY,
+  URL_KEY,
   TAG_KEY,
   DATE_KEY,
   SAVEDON_KEY,
