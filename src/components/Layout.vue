@@ -1,7 +1,7 @@
 <template>
-  <div class="d-flex align-items-stretch">
-    <nav class="col-2 text-white bg-dark p-0">
-      <div class="position-sticky fixed-top p-3">
+  <div class="d-flex justify-content-end">
+    <nav class="d-flex flex-column fixed-top fixed-bottom col-2 text-white bg-dark">
+      <div class="p-3 pb-0">
         <h1 v-if="isMainPage" class="fs-4 text-white text-decoration-none mb-0">{{ siteName }}</h1>
         <router-link
           v-else
@@ -11,6 +11,8 @@
           {{ siteName }}
         </router-link>
         <hr />
+      </div>
+      <div class="position-relative flex-grow-1">
         <slot name="navbar"></slot>
       </div>
     </nav>

@@ -1,5 +1,5 @@
 <template>
-  <ul class="nav nav-pills flex-column mb-auto">
+  <ul class="nav nav-pills d-flex flex-column flex-nowrap position-absolute fixed-top overflow-auto h-100 p-3">
     <li
       v-for="(tag, index) in tagsList"
       :key="index"
@@ -26,12 +26,28 @@
         <span class="badge badge-pill bg-light text-dark ml-auto">{{ counter }}</span>
       </button>
     </li>
+    <li class="nav-item">
+      <router-link
+        v-if="isMainPage"
+        to="/parser"
+        class="nav-link d-flex align-items-center justify-content-between text-white"
+      >
+        Парсер
+      </router-link>
+      <router-link
+        v-else
+        to="/"
+        class="nav-link d-flex align-items-center justify-content-between text-white"
+      >
+        На главную
+      </router-link>
+    </li>
   </ul>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { useBlogStore } from '../store/modules/blog';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   name: 'Navbar',
@@ -56,20 +72,12 @@ export default defineComponent({
   },
 
   setup() {
-    const blogStore = useBlogStore();
-    //const tagsList = computed(() => blogStore.tagsList);
-    //const taggedItemsSumm = computed(() => blogStore.tagsList.reduce((acc, item) => acc + Number(item[COUNTER_KEY]), 0));
-
-/*
-    const selectTag = (value: number | null = null) => {
-      blogStore.setCurrentItems(value);
-    };*/
+    const route = useRoute();
+    const isMainPage = computed(() => route.path === '/');
 
     return {
-      //tagsList,
-      //taggedItemsSumm,
-      //selectTag
+      isMainPage
     };
-  },
+  }
 });
 </script>

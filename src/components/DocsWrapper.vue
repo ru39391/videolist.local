@@ -14,25 +14,16 @@
         v-if="currentBookmarks.length > 0"
         class="list-group list-group-light"
       >
-        <li
+        <DocRow
           v-for="(item, index) in currentBookmarks"
           :key="index"
-           class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <div>
-            <div class="fw-bold" @click="console.log(item)">{{ (index + 1).toString() }}. {{ item.name }}</div>
-            <a class="text-muted" :href="item.url" target="_blank">{{ item.url.slice(0,100) }}</a>
-          </div>
-          <span
-            :class="[
-              'badge badge-pill text-light',
-              { 'bg-primary': !item.item_id },
-              { 'bg-danger': item.item_id },
-            ]"
-          >
-            {{ item.item_id && item.item_id.length }} {{ item.item_id || item.category }}
-          </span>
-        </li>
+          :index="index + 1"
+          :id="item.item_id"
+          :name="item.name"
+          :category="item.category"
+          :url="item.url"
+          :savedon="item.savedon"
+        />
       </ul>
     </template>
   </Layout>
@@ -43,6 +34,7 @@ import { computed, defineComponent } from 'vue';
 import { useBookmarksStore } from '../store/modules/bookmarks';
 import { CATEGORY_KEY, COUNTER_KEY } from '../utils/constants';
 import type { TTagData } from '../utils/types';
+import DocRow from '../components/DocRow.vue';
 import Layout from '../components/Layout.vue';
 import Navbar from './Navbar.vue';
 
@@ -50,6 +42,7 @@ export default defineComponent({
   name: 'DocsWrapper',
 
   components: {
+    DocRow,
     Layout,
     Navbar
   },

@@ -58,8 +58,8 @@ const useBlogStore = defineStore('blog', () => {
     tagsList.value = sortArrValues(array.filter(item => item[COUNTER_KEY] > 0), COUNTER_KEY, 'DESC') as TTagData[];
   };
 
-  const setCurrentItems = (value: number | null = null) => {
-    currentItems.value = value === null ? [...itemsList.value] : [...itemsList.value].filter(item => item[TAG_KEY] === value);
+  const setCurrentItems = (value: TTagData | null = null) => {
+    currentItems.value = value === null ? [...itemsList.value] : [...itemsList.value].filter(item => item[TAG_KEY] === value[ID_KEY]);
   };
 
   const fetchData = async () => {

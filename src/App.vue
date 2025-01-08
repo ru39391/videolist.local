@@ -1,12 +1,6 @@
 <template>
   <p v-if="isPostsLoading" class="preloader">{{ alertMessage }}</p>
   <router-view v-else></router-view>
-<!--
-  <Layout>
-    <template #content>
-    </template>
-  </Layout>
-  -->
 </template>
 
 <script lang="ts">
