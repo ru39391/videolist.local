@@ -21,15 +21,21 @@
       <slot name="content"></slot>
     </div>
   </div>
+  <Modal />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import { SITE_NAME } from '../utils/constants';
+import Modal from './Modal.vue';
 
 export default defineComponent({
   name: 'Layout',
+
+  components: {
+    Modal
+  },
 
   setup() {
     const route = useRoute();

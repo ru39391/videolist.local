@@ -51,21 +51,21 @@
           :category="item.category"
           :url="item.url"
           :savedon="item.savedon"
+          :createBookmark="createBookmark"
+          :removeBookmark="removeBookmark"
         />
       </ul>
     </template>
   </Layout>
-  <Modal />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, watch } from 'vue';
 import { useBookmarksStore } from '../store/modules/bookmarks';
 import { CATEGORY_KEY, COUNTER_KEY } from '../utils/constants';
-import type { TTagData } from '../utils/types';
-import DocRow from '../components/DocRow.vue';
-import Layout from '../components/Layout.vue';
-import Modal from './Modal.vue';
+import type { TTagData, TItemData } from '../utils/types';
+import DocRow from './DocRow.vue';
+import Layout from './Layout.vue';
 import Navbar from './Navbar.vue';
 
 export default defineComponent({
@@ -74,7 +74,6 @@ export default defineComponent({
   components: {
     DocRow,
     Layout,
-    Modal,
     Navbar
   },
 
@@ -88,6 +87,8 @@ export default defineComponent({
     const bookmarksData = computed(() => bookmarksStore.bookmarksData);
 
     const fetchBookmarks = () => bookmarksStore.fetchBookmarks();
+    const createBookmark = (item: TItemData) => bookmarksStore.createBookmark(item);
+    const removeBookmark = (item: TItemData) => bookmarksStore.removeBookmark(item);
 
     const selectTag = (data: TTagData | null = null) => {
       if(!data) {
@@ -113,6 +114,8 @@ export default defineComponent({
       currentTag,
       bookmarksData,
       fetchBookmarks,
+      createBookmark,
+      removeBookmark,
       selectTag
     };
   }

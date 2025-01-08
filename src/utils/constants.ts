@@ -7,6 +7,7 @@ const DATE_KEY = 'date';
 const SAVEDON_KEY = 'savedon';
 const COUNTER_KEY = 'counter';
 const CATEGORY_KEY = 'category';
+const ALIAS_KEY = 'alias';
 
 const ITEMS_KEY = 'items';
 const TAGS_KEY = 'tags';
@@ -35,6 +36,7 @@ export {
   SAVEDON_KEY,
   COUNTER_KEY,
   CATEGORY_KEY,
+  ALIAS_KEY,
   DATA_IS_LOADING_MESS,
   POSTS_ERROR_MESS,
 }

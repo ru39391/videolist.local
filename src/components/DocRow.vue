@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between align-items-center mb-1">
       <div>
         <small class="text-body-secondary">{{ savedon }}</small>
-        <div class="fw-bold" @click="console.log(item)">{{ index.toString() }}. {{ name }}</div>
+        <div class="fw-bold">{{ index.toString() }}. {{ name }}</div>
         <h6 v-if="id">
           <span class="badge bg-light border border-secondary text-dark">{{ id }}</span> - {{ id.length }}
         </h6>
@@ -30,6 +30,7 @@
       <button
         class="badge border-0 bg-transparent text-primary px-0"
         type="button"
+        @click="createBookmark(item)"
       >
         Сохранить
       </button>
@@ -40,7 +41,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useBookmarksStore } from '../store/modules/bookmarks';
-import type { TItemData } from '../utils/types';
 
 export default defineComponent({
   name: 'DocRow',
@@ -69,16 +69,15 @@ export default defineComponent({
     id: {
       type: String,
       required: false,
-    }
+    },
+    removeBookmark: {
+      type: Function,
+      required: true,
+    },
+    createBookmark: {
+      type: Function,
+      required: true,
+    },
   },
-
-  setup() {
-    const bookmarksStore = useBookmarksStore();
-    const removeBookmark = (item: TItemData) => bookmarksStore.removeBookmark(item);
-
-    return {
-      removeBookmark
-    }
-  }
 });
 </script>

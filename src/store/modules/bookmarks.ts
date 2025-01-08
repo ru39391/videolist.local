@@ -9,7 +9,8 @@ import {
   URL_KEY,
   COUNTER_KEY,
   TAG_KEY,
-  CATEGORY_KEY
+  CATEGORY_KEY,
+  ALIAS_KEY
 } from '../../utils/constants';
 
 import type {
@@ -26,6 +27,7 @@ const blogStore = useBlogStore();
 
 const useBookmarksStore = defineStore('bookmarks', () => {
   const isLoading = ref<boolean>(false);
+  const isModalVisible = ref<boolean>(false);
   const currentBookmarks = ref<TItemData[]>([]);
   const bookmarksList = ref<TItemData[]>([]);
   const bookmarkTagsList = ref<TTagData[]>([]);
@@ -37,7 +39,6 @@ const useBookmarksStore = defineStore('bookmarks', () => {
 
   const setCurrentItems = ({ id, name }: TTagData) => {
     const array = [...bookmarksList.value].filter((item) => item[CATEGORY_KEY] === name);
-    //const ids = [...blogStore.tagsList].map(item => item[ID_KEY] as number);
 
     currentBookmarks.value = sortArrValues(
       array.map((item) =>  ({
@@ -110,6 +111,22 @@ const useBookmarksStore = defineStore('bookmarks', () => {
     currentBookmarks.value = [...currentBookmarks.value].filter(data => data[ID_KEY] !== item[ID_KEY]);
   };
 
+  const createBookmark = (item: TItemData) => {
+    let data = null;
+
+    if(item[ITEM_ID_KEY]) {
+      data = [...blogStore.itemsList].find(data => data[ITEM_ID_KEY].includes(item[ITEM_ID_KEY]));
+    } else {
+      data = item[ALIAS_KEY] ? [...blogStore.itemsList].find(data => data[ALIAS_KEY].includes(item[ALIAS_KEY])) : null;
+    }
+
+    if(data) {
+      console.log(data);
+      isModalVisible.value = true;
+      return;
+    }
+  };
+
   const fetchBookmarks = async () => {
     setLoading(true);
 
@@ -128,12 +145,14 @@ const useBookmarksStore = defineStore('bookmarks', () => {
 
   return {
     isLoading,
+    isModalVisible,
     bookmarksData,
     bookmarkTagsList,
     currentBookmarks,
     fetchBookmarks,
     setCurrentItems,
     setBookmarksData,
+    createBookmark,
     removeBookmark
   };
 });
