@@ -106,6 +106,10 @@ const useBookmarksStore = defineStore('bookmarks', () => {
     ) as TTagData[];
   };
 
+  const removeBookmark = (item: TItemData) => {
+    currentBookmarks.value = [...currentBookmarks.value].filter(data => data[ID_KEY] !== item[ID_KEY]);
+  };
+
   const fetchBookmarks = async () => {
     setLoading(true);
 
@@ -129,7 +133,8 @@ const useBookmarksStore = defineStore('bookmarks', () => {
     currentBookmarks,
     fetchBookmarks,
     setCurrentItems,
-    setBookmarksData
+    setBookmarksData,
+    removeBookmark
   };
 });
 

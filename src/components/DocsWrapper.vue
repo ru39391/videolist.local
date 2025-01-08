@@ -29,11 +29,11 @@
           <span class="badge bg-primary rounded-pill">{{ bookmarksData.itemsList.length }}</span>
         </li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
-          Всего
-          <span class="badge bg-secondary rounded-pill">
-          <template v-if="currentBookmarks.length === 0">{{ taggedItemsSumm }}</template>
-          <template v-else>{{ currentBookmarks.length }}</template>
-          </span>
+          <template v-if="bookmarksData.videoList.length + bookmarksData.itemsList.length">
+            Всего
+            <span class="badge bg-secondary rounded-pill">{{ bookmarksData.videoList.length + bookmarksData.itemsList.length }}</span>
+          </template>
+          <template v-else>Список пуст</template>
         </li>
       </ul>
 
@@ -44,6 +44,7 @@
         <DocRow
           v-for="(item, index) in currentBookmarks"
           :key="index"
+          :item="item"
           :index="index + 1"
           :id="item.item_id"
           :name="item.name"
@@ -54,6 +55,7 @@
       </ul>
     </template>
   </Layout>
+  <Modal />
 </template>
 
 <script lang="ts">
@@ -63,6 +65,7 @@ import { CATEGORY_KEY, COUNTER_KEY } from '../utils/constants';
 import type { TTagData } from '../utils/types';
 import DocRow from '../components/DocRow.vue';
 import Layout from '../components/Layout.vue';
+import Modal from './Modal.vue';
 import Navbar from './Navbar.vue';
 
 export default defineComponent({
@@ -71,6 +74,7 @@ export default defineComponent({
   components: {
     DocRow,
     Layout,
+    Modal,
     Navbar
   },
 
