@@ -21,13 +21,14 @@
       <slot name="content"></slot>
     </div>
   </div>
-  <Modal />
+  <Modal v-if="isModalVisible" />
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
 import { useRoute } from 'vue-router';
 import { SITE_NAME } from '../utils/constants';
+import { useModalStore } from '../store/modules/modal';
 import Modal from './Modal.vue';
 
 export default defineComponent({
@@ -41,10 +42,13 @@ export default defineComponent({
     const route = useRoute();
     const isMainPage = computed(() => route.path === '/');
     const siteName = computed(() => SITE_NAME);
+    const modalStore = useModalStore();
+    const isModalVisible = computed(() => modalStore.isVisible);
 
     return {
       siteName,
       isMainPage,
+      isModalVisible
     };
   }
 });

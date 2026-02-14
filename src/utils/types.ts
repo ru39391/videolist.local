@@ -51,9 +51,3 @@ export type THandledLinkData = {
   savedon: string;
   tag: string;
 }
-
-export type TBookmarkTagData = {
-  id: number | null;
-  name: string;
-  counter: number;
-}

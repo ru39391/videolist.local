@@ -1,6 +1,7 @@
 import { defineStore, setActivePinia } from 'pinia';
 import { ref } from 'vue';
 import { useBlogStore } from './blog';
+import { useModalStore } from './modal';
 import piniaStore from '../index';
 import {
   ID_KEY,
@@ -24,10 +25,10 @@ import { fetchSourceData, sortArrValues } from '../../utils';
 setActivePinia(piniaStore);
 
 const blogStore = useBlogStore();
+const modalStore = useModalStore();
 
 const useBookmarksStore = defineStore('bookmarks', () => {
   const isLoading = ref<boolean>(false);
-  const isModalVisible = ref<boolean>(false);
   const currentBookmarks = ref<TItemData[]>([]);
   const bookmarksList = ref<TItemData[]>([]);
   const bookmarkTagsList = ref<TTagData[]>([]);
@@ -107,22 +108,25 @@ const useBookmarksStore = defineStore('bookmarks', () => {
     ) as TTagData[];
   };
 
+  const isBookmarkExist = (item: TItemData) => {
+    let isDataExist = false;
+
+    if(item[ITEM_ID_KEY]) {
+      isDataExist = Boolean([...blogStore.itemsList].find(data => data[ITEM_ID_KEY].includes(item[ITEM_ID_KEY])));
+    } else {
+      isDataExist = item[ALIAS_KEY] ? Boolean([...blogStore.itemsList].find(data => data[ALIAS_KEY].includes(item[ALIAS_KEY]))) : false;
+    }
+
+    return !isDataExist;
+  };
+
   const removeBookmark = (item: TItemData) => {
     currentBookmarks.value = [...currentBookmarks.value].filter(data => data[ID_KEY] !== item[ID_KEY]);
   };
 
   const createBookmark = (item: TItemData) => {
-    let data = null;
-
-    if(item[ITEM_ID_KEY]) {
-      data = [...blogStore.itemsList].find(data => data[ITEM_ID_KEY].includes(item[ITEM_ID_KEY]));
-    } else {
-      data = item[ALIAS_KEY] ? [...blogStore.itemsList].find(data => data[ALIAS_KEY].includes(item[ALIAS_KEY])) : null;
-    }
-
-    if(data) {
-      console.log(data);
-      isModalVisible.value = true;
+    if(!isBookmarkExist(item)) {
+      modalStore.isVisible = !isBookmarkExist(item);
       return;
     }
   };
@@ -145,10 +149,10 @@ const useBookmarksStore = defineStore('bookmarks', () => {
 
   return {
     isLoading,
-    isModalVisible,
     bookmarksData,
     bookmarkTagsList,
     currentBookmarks,
+    isBookmarkExist,
     fetchBookmarks,
     setCurrentItems,
     setBookmarksData,

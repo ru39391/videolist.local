@@ -69,7 +69,7 @@ const translit = (str: string, pattern: RegExp): string => {
     .reduce(
       (acc, item) => item === 'ъ' || item === 'ь' ? acc : `${acc}${letters[item] || item}`, ''
     )
-    .slice(0,200);
+    .slice(0,100);
 }
 
 const formatName = (str: string): { name: string; alias: string; } => {

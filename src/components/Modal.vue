@@ -1,9 +1,6 @@
 <template>
   <div
-    :class="[
-      'modal fade show',
-      { 'd-block': isModalVisible }
-    ]"
+    class="modal fade show d-block"
     tabindex="-1"
     aria-hidden="true"
   >
@@ -11,31 +8,47 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Сохранение невозможно</h5>
-          <button class="btn-close" type="button"></button>
+          <button
+            class="btn-close"
+            type="button"
+            @click="closeModal"
+          ></button>
         </div>
         <div class="modal-body">Запись уже существует</div>
         <div class="modal-footer justify-content-start">
-          <button class="btn btn-outline-primary btn-sm" type="button">ОК</button>
+          <button
+            class="btn btn-outline-primary btn-sm"
+            type="button"
+            @click="closeModal"
+          >
+            ОК
+          </button>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal-backdrop fade show" v-if="isModalVisible"></div>
+  <div
+    class="modal-backdrop fade show"
+    @click="closeModal"
+  ></div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue';
-import { useBookmarksStore } from '../store/modules/bookmarks';
+import { useModalStore } from '../store/modules/modal';
 
 export default defineComponent({
   name: 'Modal',
 
   setup() {
-    const bookmarksStore = useBookmarksStore();
-    const isModalVisible = computed(() => bookmarksStore.isModalVisible);
+    const modalStore = useModalStore();
+
+    const closeModal = () => {
+      modalStore.toggleModalVisibility(false);
+    }
 
     return {
-      isModalVisible
+      closeModal
     }
   }
 });
